@@ -1,6 +1,6 @@
 import unittest
 
-import yadi
+import dicon
 
 
 class AnimalChild:
@@ -24,9 +24,9 @@ class AnimalChildB(AnimalChild):
         return 'AnimalChildB.quack'
 
 
-@yadi.inject_di_container('_di_container')
+@dicon.inject_di_container('_di_container')
 class Animal:
-    _di_container = None # type: yadi.DIContainer
+    _di_container = None # type: dicon.DIContainer
 
     def __init__(self):
         pass
@@ -42,7 +42,7 @@ class TestFactory(unittest.TestCase):
     def test_factory(self):
         target_AnimalChild = AnimalChildA
         with self.subTest(target_AnimalChild = target_AnimalChild):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[AnimalChild, target_AnimalChild]()
             di_container.register[Animal]()
             di_container.freeze()
@@ -60,7 +60,7 @@ class TestFactory(unittest.TestCase):
             
         target_AnimalChild = AnimalChildB
         with self.subTest(target_AnimalChild = target_AnimalChild):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[AnimalChild, target_AnimalChild]()
             di_container.register[Animal]()
             di_container.freeze()
@@ -77,7 +77,7 @@ class TestFactory(unittest.TestCase):
             )
 
     def test_class_constructor_is_modified_and_type_is_not_modified(self):
-        di_container = yadi.DIContainer()
+        di_container = dicon.DIContainer()
         di_container.register[Animal]()
         di_container.freeze()
 
@@ -95,13 +95,13 @@ class TestFactory(unittest.TestCase):
         )
 
     def test_exception_DIContainerMissingError(self):
-        with self.assertRaises(yadi.DIContainerMissingError):
+        with self.assertRaises(dicon.DIContainerMissingError):
             Animal()
 
     def test_exception_ClassResolutionNotRegisteredError(self):
         target_AnimalChild = AnimalChildA
-        with self.assertRaises(yadi.ClassResolutionNotRegisteredError):
-            di_container = yadi.DIContainer()
+        with self.assertRaises(dicon.ClassResolutionNotRegisteredError):
+            di_container = dicon.DIContainer()
             # di_container.register[AnimalChild, target_AnimalChild]()
             di_container.register[Animal]()
             di_container.freeze()
@@ -111,16 +111,16 @@ class TestFactory(unittest.TestCase):
 
     def test_exception_assert_register_arguments_are_classes(self):
         with self.assertRaises(AssertionError):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[0]()
         with self.assertRaises(AssertionError):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[Animal, 0]()
         with self.assertRaises(AssertionError):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[0, Animal]()
 
     def test_exception_assert_concrete_must_be_subclass_of_interface(self):
         with self.assertRaises(AssertionError):
-            di_container = yadi.DIContainer()
+            di_container = dicon.DIContainer()
             di_container.register[str, Animal]()

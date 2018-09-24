@@ -1,12 +1,12 @@
-Yadi, simple DI container injection liblary for Python.
+Dicon, simple DI container injection liblary for Python.
 
 ---
 
-Yadi, standing for Yet Another DI library, is a simple "DI container injection" library.
+Dicon is a simple "DI container injection" library.
 
 ## FAQ
 
-- Q. Is `yadi` a dependency injection library?
+- Q. Is `dicon` a dependency injection library?
 - A. No, it does not support dependency injection.  It supports DI container injection and service (singleton) locator.
 
 ## Important points
@@ -17,25 +17,25 @@ Yadi, standing for Yet Another DI library, is a simple "DI container injection" 
 
 ## Features
 
-- `@yadi.inject_di_container` class decorator supports nested DI container injection, without modification on type.
-- `yadi.DIContainer` provides class resolver and singleton locating.
+- `@dicon.inject_di_container` class decorator supports nested DI container injection, without modification on type.
+- `dicon.DIContainer` provides class resolver and singleton locating.
 
 ### Class resolver, no modification on type
 
 ```python
-import yadi
+import dicon
 
 class A:
     pass
     
-di_container = yadi.DIContainer()
+di_container = dicon.DIContainer()
 di_container.register[A]()
 di_container.freeze()
 
 # Resolve class.
 class_A = di_container.resolve[A]
 a = class_A()
-# yadi.DIContainer does not modify type of the object.
+# dicon.DIContainer does not modify type of the object.
 assert type(a) is A
 # It only modifies constructor.  (Normally it will be not a problem.)
 assert not (class_A is A)
@@ -44,21 +44,21 @@ assert not (class_A is A)
 ### Nested DI container injection
 
 ```python
-@yadi.inject_di_container('_di_container')
+@dicon.inject_di_container('_di_container')
 class B:
     _di_container = None # Here we get instance of DIContainer.
 
     def __init__(self, message):
         print(message, self._di_container)
 
-@yadi.inject_di_container('_di_container')
+@dicon.inject_di_container('_di_container')
 class C:
     _di_container = None # Here we get instance of DIContainer.
 
     def __init__(self):
         self._b = self._di_container.resolve[B]('B must be have DIContainer:')
 
-di_container = yadi.DIContainer()
+di_container = dicon.DIContainer()
 di_container.register[B]()
 di_container.register[C]()
 di_container.freeze()
@@ -73,7 +73,7 @@ TBW...
 
 ## How it works
 
-1. `@yadi.inject_di_container` modifies `__init__` of given class to make it possible `__init__` can take DIContainer as an argument.
+1. `@dicon.inject_di_container` modifies `__init__` of given class to make it possible `__init__` can take DIContainer as an argument.
 2. `DIContainer.resolve` ties itself to that argument by `functools.partial`.
 
 That's all.

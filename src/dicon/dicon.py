@@ -40,7 +40,7 @@ def _get_non_conflict_param_name(func: Callable, param_format: str) -> str:
 
 class DIContainerMissingError(Exception):
     def __init__(self, cls):
-        self.message = 'DI container missing for class `{}`.  Use `yadi.hoge.resolve[]` to create instances.'.format(cls.__name__)
+        self.message = 'DI container missing for class `{}`.  Use `dicon.hoge.resolve[]` to create instances.'.format(cls.__name__)
 
     def __str__(self):
         return self.message
@@ -151,7 +151,7 @@ class _Registerer:
             assert inspect.isclass(interface)
             assert inspect.isclass(concrete)
             assert issubclass(concrete, interface), \
-                'In `yadi.DIContainer.register[interface, concrete]`, concrete must be subclass of interface'
+                'In `dicon.DIContainer.register[interface, concrete]`, concrete must be subclass of interface'
 
             if hasattr(interface, _INIT_ARG_NAME_NAME):
                 partial_args = {getattr(interface, _INIT_ARG_NAME_NAME): self._di_container}
@@ -166,4 +166,4 @@ class _Registerer:
                 partial_args = {getattr(cls, _INIT_ARG_NAME_NAME): self._di_container}
                 self._di_container._factory[cls] = functools.partial(cls, **partial_args)
             else:
-                raise Exception('class `{}` is not available for syntax `yadi.DIContainer.resister[cls]`.'.format(cls))
+                raise Exception('class `{}` is not available for syntax `dicon.DIContainer.resister[cls]`.'.format(cls))

@@ -1,6 +1,6 @@
 import unittest
 
-import yadi
+import dicon
 
 
 class TestAuxiliaryFunctions(unittest.TestCase):
@@ -10,21 +10,21 @@ class TestAuxiliaryFunctions(unittest.TestCase):
 
         with self.subTest():
             self.assertEqual(
-                yadi.yadi._get_non_conflict_param_name(f, 'a_{}'),
+                dicon.dicon._get_non_conflict_param_name(f, 'a_{}'),
                 'a_1'
             )
         with self.subTest():
             self.assertEqual(
-                yadi.yadi._get_non_conflict_param_name(f, 'b_{}'),
+                dicon.dicon._get_non_conflict_param_name(f, 'b_{}'),
                 'b_2'
             )
         with self.subTest():
             self.assertEqual(
-                yadi.yadi._get_non_conflict_param_name(f, 'c_{}'),
+                dicon.dicon._get_non_conflict_param_name(f, 'c_{}'),
                 'c_1'
             )
         with self.subTest():
             self.assertEqual(
-                yadi.yadi._get_non_conflict_param_name(f, 'd_{}'),
+                dicon.dicon._get_non_conflict_param_name(f, 'd_{}'),
                 'd_0'
             )

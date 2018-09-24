@@ -15,11 +15,11 @@ def _read_readme():
 
 
 metadata = {
-    'name':             'yadi',
+    'name':             'dicon',
     'version':          '0.0.1',
-    'description':      'Yadi, simple DI container injection liblary for Python.',
+    'description':      'Dicon, simple DI container injection liblary for Python.',
     'long_description': _read_readme(),
-    'url':              'https://github.dena.jp/kenoss/yadi',
+    'url':              'https://github.dena.jp/kenoss/dicon',
     'author':           'keno',
     'author_email':     'keno.ss57@gmail.com',
     'license':          'MIT',

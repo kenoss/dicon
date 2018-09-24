@@ -1,13 +1,13 @@
 import unittest
 
-import yadi
+import dicon
 
 import inspect
 
 
-@yadi.inject_di_container('_di_container')
+@dicon.inject_di_container('_di_container')
 class Duck:
-    _di_container = None # type: yadi.DIContainer
+    _di_container = None # type: dicon.DIContainer
 
     def __init__(self, prefix: str, suffix: str = ''):
         self._prefix = prefix
@@ -18,7 +18,7 @@ class Duck:
 
 
 class OriginalDuck:
-    _di_container = None # type: yadi.DIContainer
+    _di_container = None # type: dicon.DIContainer
 
     def __init__(self, prefix: str, suffix: str = ''):
         pass
@@ -26,7 +26,7 @@ class OriginalDuck:
 
 class TestInitMethod(unittest.TestCase):
     def test_init_args_are_collectly_passed(self):
-        di_container = yadi.DIContainer()
+        di_container = dicon.DIContainer()
         di_container.register[Duck]()
         di_container.freeze()
 

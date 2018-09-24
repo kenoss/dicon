@@ -1,16 +1,16 @@
 import unittest
 
-import yadi
+import dicon
 
 
-@yadi.inject_di_container('_di_container')
+@dicon.inject_di_container('_di_container')
 class A:
     pass
 
 
 class TestClone(unittest.TestCase):
     def test_clone(self):
-        di_container = yadi.DIContainer()
+        di_container = dicon.DIContainer()
         di_container.register[A]()
         di_container.register_singleton('b', 'bar')
 
