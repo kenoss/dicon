@@ -16,7 +16,7 @@ def _read_readme():
 
 metadata = {
     'name':             'dicon',
-    'version':          '0.0.1',
+    'version':          '0.0.2',
     'description':      'Dicon, simple DI container injection liblary for Python.',
     'long_description': _read_readme(),
     'url':              'https://github.com/kenoss/dicon',
