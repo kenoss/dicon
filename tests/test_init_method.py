@@ -62,3 +62,25 @@ class TestInitMethod(unittest.TestCase):
                 duck_params[key],
                 orig_params[key]
             )
+
+    def test_factories_differ_until_freezed(self):
+        di_container = dicon.DIContainer()
+        di_container.register[Duck]()
+
+        self.assertNotEqual(
+            di_container.resolve[Duck],
+            di_container.resolve[Duck]
+        )
+
+        x = di_container.resolve[Duck]
+        di_container.freeze()
+        y = di_container.resolve[Duck]
+        self.assertNotEqual(
+            x,
+            y
+        )
+
+        self.assertEqual(
+            di_container.resolve[Duck],
+            di_container.resolve[Duck]
+        )

@@ -7,30 +7,67 @@ import dicon
 class A:
     pass
 
+@dicon.inject_di_container('_di_container')
+class B:
+    def __init__(self):
+        assert self._di_container.resolve[A]
+
 
 class TestClone(unittest.TestCase):
     def test_clone(self):
-        di_container = dicon.DIContainer()
-        di_container.register[A]()
-        di_container.register_singleton('b', 'bar')
+        x = dicon.DIContainer()
+        x.register[A]()
+        x.register_singleton('b', 'bar')
 
-        x = di_container.clone()
+        y = x.clone()
 
-        di_container.freeze()
+        x.freeze()
 
-        self.assertEqual(
-            x.resolve[A],
-            di_container.resolve[A]
+        self.assertNotEqual(
+            y.resolve[A],
+            x.resolve[A]
         )
         self.assertEqual(
-            x.singleton['b'],
-            di_container.singleton['b']
+            y.singleton['b'],
+            x.singleton['b']
         )
         self.assertEqual(
-            x._freezed,
+            y._freezed,
             False
         )
         self.assertEqual(
-            di_container._freezed,
+            x._freezed,
             True
         )
+
+        y.freeze()
+
+        self.assertNotEqual(
+            y.resolve[A],
+            x.resolve[A]
+        )
+        self.assertEqual(
+            y.singleton['b'],
+            x.singleton['b']
+        )
+        self.assertEqual(
+            y._freezed,
+            True
+        )
+
+    def test_do_not_bind_di_container_before_clone(self):
+        x = dicon.DIContainer()
+        x.register[B]()
+
+        y = x.clone()
+        y.register[A]()
+        assert y.resolve[B]()
+        y.freeze()
+        assert y.resolve[B]()
+
+        z = x.clone()
+        x.freeze()
+        z.register[A]()
+        assert z.resolve[B]()
+        z.freeze()
+        assert z.resolve[B]()

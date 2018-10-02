@@ -101,7 +101,8 @@ class DIContainer:
     resolve = None
 
     def __init__(self):
-        self._factory = {}
+        self._classes = {}
+        self._factory = None
         self.singleton = {}
         self._freezed = False
         self.resolve = _Resolver(self)
@@ -109,14 +110,19 @@ class DIContainer:
 
     def clone(self):
         di_container = DIContainer()
-        di_container._factory = copy.copy(self._factory)
+
+        if self._freezed:
+            di_container._factory = self._factory
+        else:
+            di_container._classes = copy.copy(self._classes)
+
         di_container.singleton = copy.copy(self.singleton)
         di_container._freezed = self._freezed
         return di_container
 
     def freeze(self):
         assert not self._freezed
-        self._factory = MappingProxyType(self._factory)
+        self._factory = MappingProxyType(dict((cls, self.resolve._bind(cls)) for cls in self._classes.keys()))
         self.singleton = MappingProxyType(self.singleton)
         self._freezed = True
 
@@ -129,9 +135,21 @@ class _Resolver:
         self._di_container = di_container
 
     def __getitem__(self, cls):
-        if cls not in self._di_container._factory:
-            raise ClassResolutionNotRegisteredError(cls)
-        return self._di_container._factory[cls]
+        if self._di_container._freezed:
+            if cls not in self._di_container._factory:
+                raise ClassResolutionNotRegisteredError(cls)
+            return self._di_container._factory[cls]
+        else:
+            if cls not in self._di_container._classes:
+                raise ClassResolutionNotRegisteredError(cls)
+            return self._bind(cls)
+
+    def _bind(self, cls):
+        if hasattr(cls, _INIT_ARG_NAME_NAME):
+            partial_args = {getattr(cls, _INIT_ARG_NAME_NAME): self._di_container}
+            return functools.partial(self._di_container._classes[cls], **partial_args)
+        else:
+            return self._di_container._classes[cls]
 
 
 class _Registerer:
@@ -153,17 +171,10 @@ class _Registerer:
             assert issubclass(concrete, interface), \
                 'In `dicon.DIContainer.register[interface, concrete]`, concrete must be subclass of interface'
 
-            if hasattr(interface, _INIT_ARG_NAME_NAME):
-                partial_args = {getattr(interface, _INIT_ARG_NAME_NAME): self._di_container}
-                self._di_container._factory[interface] = functools.partial(cls, **partial_args)
-            else:
-                self._di_container._factory[interface] = concrete
+            self._di_container._classes[interface] = concrete
         else:
             cls = key
             assert inspect.isclass(cls)
+            assert hasattr(cls, _INIT_ARG_NAME_NAME), 'class `{}` is not available for syntax `dicon.DIContainer.resister[cls]`.'.format(cls)
 
-            if hasattr(cls, _INIT_ARG_NAME_NAME):
-                partial_args = {getattr(cls, _INIT_ARG_NAME_NAME): self._di_container}
-                self._di_container._factory[cls] = functools.partial(cls, **partial_args)
-            else:
-                raise Exception('class `{}` is not available for syntax `dicon.DIContainer.resister[cls]`.'.format(cls))
+            self._di_container._classes[cls] = cls
