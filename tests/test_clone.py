@@ -10,27 +10,27 @@ class A:
 
 class TestClone(unittest.TestCase):
     def test_clone(self):
-        di_container = dicon.DIContainer()
-        di_container.register[A]()
-        di_container.register_singleton('b', 'bar')
+        x = dicon.DIContainer()
+        x.register[A]()
+        x.register_singleton('b', 'bar')
 
-        x = di_container.clone()
+        y = x.clone()
 
-        di_container.freeze()
+        x.freeze()
 
         self.assertEqual(
-            x.resolve[A],
-            di_container.resolve[A]
+            y.resolve[A],
+            x.resolve[A]
         )
         self.assertEqual(
-            x.singleton['b'],
-            di_container.singleton['b']
+            y.singleton['b'],
+            x.singleton['b']
         )
         self.assertEqual(
-            x._freezed,
+            y._freezed,
             False
         )
         self.assertEqual(
-            di_container._freezed,
+            x._freezed,
             True
         )
