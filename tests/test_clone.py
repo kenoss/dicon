@@ -34,3 +34,18 @@ class TestClone(unittest.TestCase):
             x._freezed,
             True
         )
+
+        y.freeze()
+
+        self.assertEqual(
+            y.resolve[A],
+            x.resolve[A]
+        )
+        self.assertEqual(
+            y.singleton['b'],
+            x.singleton['b']
+        )
+        self.assertEqual(
+            y._freezed,
+            True
+        )
