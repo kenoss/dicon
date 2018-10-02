@@ -23,7 +23,7 @@ class TestClone(unittest.TestCase):
 
         x.freeze()
 
-        self.assertEqual(
+        self.assertNotEqual(
             y.resolve[A],
             x.resolve[A]
         )
@@ -42,7 +42,7 @@ class TestClone(unittest.TestCase):
 
         y.freeze()
 
-        self.assertEqual(
+        self.assertNotEqual(
             y.resolve[A],
             x.resolve[A]
         )
